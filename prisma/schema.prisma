@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  student
+  lecturer
+  admin
+}
+
+model file {
+  uuid      String   @id @unique @default(uuid())
+  src       String
+  provider  String // self-hosted || cloudinary || s3
+  type      String // image || video // documents etc
+  size      String?
+  alt       String?
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      user[]
+}
+
+model department {
+  uuid      String   @id @unique @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      user[]
+}
+
+model user {
+  uuid        String      @id @unique @default(uuid())
+  matricNo    String?
+  firstName   String
+  middleName  String?
+  email       String?     @unique
+  phone       String?
+  lastName    String
+  password    String
+  role        Role        @default(student)
+  isVerified  Boolean     @default(false)
+  isSuspended Boolean     @default(false)
+  isBanned    Boolean     @default(false)
+  avatar      file?       @relation(fields: [fileUuid], references: [uuid])
+  department  department? @relation(fields: [departmentUuid], references: [uuid])
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  fileUuid       String?
+  departmentUuid String?
+}
