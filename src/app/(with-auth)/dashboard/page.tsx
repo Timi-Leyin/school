@@ -4,10 +4,10 @@ import Link from "next/link";
 import React from "react";
 
 function Page() {
-  const user = useUser();
+  const { user } = useUser();
   return (
     <div className="">
-      <div>{JSON.stringify(user)}</div>
+      <div>{user?.firstName}</div>
       <Link href={"/dashboard/profile"}>My Profile</Link>
     </div>
   );

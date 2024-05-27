@@ -5,7 +5,10 @@ import { UserContext } from "@/types/context";
 import { ReactNode, createContext, use, useEffect, useMemo } from "react";
 import { UserContextResponse } from "@/types/response";
 import { usePathname, useRouter } from "next/navigation";
-import { FaSpinner } from "react-icons/fa";
+import { FaInfoCircle, FaSpinner } from "react-icons/fa";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+
 const userContext = createContext<UserContext>({
   user: null,
 });
@@ -22,10 +25,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const router = useRouter();
   const pathname = usePathname();
+
+  const redirect = () => {
+    router.replace(`/auth/login?next=${pathname}`);
+  };
+
   useMemo(() => {
     fetchData();
     if (!data && !loading && error) {
-      router.replace(`/auth/login?next=${pathname}`);
+      redirect();
     }
   }, []);
   return (
@@ -35,9 +43,41 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {loading ? (
-        <FaSpinner className="animate-spin" />
+        <div className="p-6">
+          <FaSpinner className="animate-spin" />
+        </div>
       ) : (
-        <div className="">{error ? <div> Error: {error} </div> : children}</div>
+        <div className="">
+          {error ? (
+            <div className="p-12">
+              <Alert variant="destructive">
+                <FaInfoCircle fontSize={"25px"} />
+                <AlertTitle className="text-2xl font-bold">{error} </AlertTitle>
+                <AlertDescription>
+                  An error Occurred. Please refresh or log in again.
+                </AlertDescription>
+                <div className="flex mt-3 mb-1 gap-3">
+                  <Button
+                    disabled={loading}
+                    onClick={() => fetchData()}
+                    className="bg-gray-300 text-black text-xs hover:text-white"
+                  >
+                    Try Again
+                  </Button>
+                  <Button
+                    onClick={() => redirect()}
+                    disabled={loading}
+                    className="bg-primary-color text-xs"
+                  >
+                    Login
+                  </Button>
+                </div>
+              </Alert>
+            </div>
+          ) : (
+            children
+          )}
+        </div>
       )}
     </userContext.Provider>
   );

@@ -24,10 +24,10 @@ export default async (req: NextRequest) => {
     return {
       error: "User not Found",
     };
-  } catch (error) {
-    console.log(error);
+  } catch (error:any) {
+    const {message} = error;
     return {
-      error: "Invalid Authorization",
+      error: message && message.replace("jwt", "Session") || "Invalid Authorization",
     };
   }
 };
