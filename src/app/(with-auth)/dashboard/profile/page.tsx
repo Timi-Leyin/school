@@ -8,7 +8,7 @@ function Page() {
   return (
     <div className="">
       <div>{JSON.stringify(user)}</div>
-      <Link href={"/dashboard/profile"}>My Profile</Link>
+      <Link href={"/dashboard"}>go back to Dashbaord</Link>
     </div>
   );
 }

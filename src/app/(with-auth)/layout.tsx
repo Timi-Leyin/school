@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { ReactNode } from "react";
+import { UserProvider } from "../context/user-context";
 
-function Layout() {
-  return (
-    <div>Layout</div>
-  )
+function Layout({ children }: { children: ReactNode }) {
+  return <UserProvider>{children}</UserProvider>;
 }
 
-export default Layout
+export default Layout;

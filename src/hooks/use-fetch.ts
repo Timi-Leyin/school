@@ -6,7 +6,7 @@ export const useFetch = <Args = any, Res = ResponseT>(fetcher: any) => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async (args: Args) => {
+  const fetchData = async (args?: Args) => {
     setError(null);
     setLoading(true);
     setData(null!)
