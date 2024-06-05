@@ -16,25 +16,32 @@ function Header() {
         <NavMenu />
       </div>
 
-     <div className="flex gap-4 items-center">
-        <div className="size-10 cursor-pointer bg-gray-200 rounded-full flex items-center justify-center">
-            <FaSearch fontSize={"14px"} />
+      <div className="flex gap-4 items-center">
+        <div className="h-10 px-3 cursor-pointer bg-gray-100 rounded-full flex items-center justify-around">
+          <input
+            type="text"
+            placeholder="Search Anything ..."
+            className="outline-0 text-sm bg-transparent px-3"
+          />
+          <FaSearch fontSize={"14px"} />
         </div>
-        <div className="size-10 cursor-pointer bg-gray-200 rounded-full flex items-center justify-center">
-            <FaBell fontSize={"14px"} />
+        <div className="size-10 cursor-pointer bg-gray-100 rounded-full flex items-center justify-center">
+          <FaBell fontSize={"14px"} />
         </div>
-     <div className="">
-        <ProfileMenuDropdown>
-          <div className="flex items-center gap-2">
-            <Avatar className="select-none">
-              <AvatarImage src="" />
-              <AvatarFallback>{getInitials(user!)}</AvatarFallback>
-            </Avatar>
-            <FaAngleDown />
-          </div>
-        </ProfileMenuDropdown>
+        <div className="">
+          <ProfileMenuDropdown>
+            <div className="flex items-center gap-2">
+              <Avatar className="select-none">
+                <AvatarImage src="" />
+                <AvatarFallback className="text-xs">
+                  {getInitials(user!)}
+                </AvatarFallback>
+              </Avatar>
+              <FaAngleDown />
+            </div>
+          </ProfileMenuDropdown>
+        </div>
       </div>
-     </div>
     </div>
   );
 }
