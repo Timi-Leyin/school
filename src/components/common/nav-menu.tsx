@@ -14,7 +14,6 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-
 export function NavMenu() {
   return (
     <NavigationMenu>
@@ -58,9 +57,9 @@ export function NavMenu() {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <Link href="/docs" legacyBehavior passHref>
+          <Link href="/dashboard/manage/students" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Course Materials
+              Manage Students
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

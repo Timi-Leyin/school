@@ -7,3 +7,6 @@ export interface ResponseT {
 export interface UserContextResponse extends ResponseT {
   data: userWithoutPassword;
 }
+export interface GetUsersResponse extends ResponseT {
+  data: userWithoutPassword[];
+}
