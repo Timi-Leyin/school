@@ -1,4 +1,4 @@
-import { user } from "@prisma/client";
+import { Role, user, votes } from "@prisma/client";
 
 export type userWithoutPassword = Omit<user, "password">;
 
@@ -14,3 +14,13 @@ export type newVoteType = {
   visibility: "public" | "private";
   whoCanVote: "everyone";
 };
+
+// SCHEMA
+
+type createdBy = {
+  role: Role;
+  email: string;
+};
+export interface VoteData extends votes {
+  createdBy: createdBy;
+}

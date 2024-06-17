@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import {
   FaGlobeAfrica,
+  FaImage,
   FaLock,
   FaPlus,
   FaSpinner,
@@ -25,14 +26,21 @@ import { toast } from "sonner";
 import { useFetch } from "@/hooks/use-fetch";
 import { API } from "@/config/api";
 import { newVoteType } from "@/types/global";
+import { useRouter } from "next/navigation";
 
 const newVote = async (values: newVoteType) => {
-  return API.post("/api/votes", values);
+  return API.post("/api/votes", values, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 };
 
 function Page() {
+  const router = useRouter();
   const startDateRef = useRef<HTMLInputElement>(null);
   const endDateRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const increaseOption = () => {
     formik.setFieldValue("options", [
       ...formik.values.options,
@@ -52,6 +60,12 @@ function Page() {
   const [visibility, setVisibility] = useState("public");
   const { data, loading, fetchData: createNewVote } = useFetch(newVote);
   const [whoCanVote, setWhoCanVote] = useState("everyone");
+  const initialPreview = "/thumb.avif";
+  const [previewThumbnail, setPreview] = useState(initialPreview);
+
+  const resetPreview = () => {
+    setPreview(initialPreview);
+  };
   // const [overallValid, setOverallValidation] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -64,7 +78,18 @@ function Page() {
     },
     validationSchema: createVoteSchema,
     async onSubmit(values) {
-      await createNewVote(values);
+      if (!formRef.current) {
+        return;
+      }
+      const fd = new FormData(formRef.current);
+      // fd.append("title", values.title);
+      // fd.append("startDate", values.startDate);
+      // fd.append("endDate", values.endDate);
+      // fd.append("visibility", values.visibility);
+      // fd.append("whoCanVote", values.whoCanVote);
+      // fd.append("options", JSON.stringify(values.options));
+      await createNewVote(fd);
+      router.push("/dashboard");
     },
   });
 
@@ -95,12 +120,37 @@ function Page() {
   };
   return (
     <form
+      ref={formRef}
       onSubmit={formik.handleSubmit}
       className="my-8 flex max-w-[900px] mx-auto p-12 justify-between"
     >
       <div className="">
         <div className="relative rounded-xl overflow-hidden border w-max h-max">
-          <Image src="/thumb.avif" alt={""} width={350} height={350} />
+          <Image src={previewThumbnail} alt={""} width={350} height={350} />
+          <div className="rounded-full bg-gray-200 absolute bottom-0 m-3 flex justify-center items-center cursor-pointer hover:opacity-70 transition-colors backdrop-blur-md size-12">
+            <FaImage />
+            <input
+              type="file"
+              onChange={(e) => {
+                console.log(e.target.files);
+                if (e.target.files) {
+                  const url = URL.createObjectURL(e.target.files[0]);
+                  setPreview(url);
+                }
+              }}
+              name="thumbnail"
+              className="opacity-0 absolute"
+            />
+          </div>
+
+          {previewThumbnail == initialPreview ? undefined : (
+            <div
+              onClick={() => resetPreview()}
+              className="rounded-full right-0 bg-red-200 absolute bottom-0 m-3 flex justify-center items-center cursor-pointer hover:opacity-70 transition-colors backdrop-blur-md size-12"
+            >
+              <FaTimes />
+            </div>
+          )}
         </div>
       </div>
       <div className="flex-1 px-9">

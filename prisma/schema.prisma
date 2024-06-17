@@ -68,21 +68,15 @@ model user {
   updatedAt DateTime @updatedAt
 }
 
-model voteTextOption {
-  uuid          String       @id @unique @default(uuid())
-  text          String
-  voteOptions   voteOptions? @relation(fields: [voteOptionsId], references: [uuid])
-  voteOptionsId String?
-}
-
 model voteOptions {
   uuid    String @id @unique @default(uuid())
   votes   votes  @relation(fields: [votesId], references: [uuid])
   file    file[]
   votesId String
 
-  optionsText  voteTextOption[]
-  optionsUsers user[]
+  text   String?
+  users  user?   @relation(fields: [userId], references: [uuid])
+  userId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,8 +98,8 @@ model votes {
   visibility  Visibility @default(public)
   whoCanView  WhoCanView @default(everyone)
 
-  thumbnail file   @relation(fields: [fileId], references: [uuid])
-  fileId    String
+  thumbnail file?   @relation(fields: [fileId], references: [uuid])
+  fileId    String?
 
   createdBy user   @relation("created_by_user", fields: [userId], references: [uuid])
   userId    String
