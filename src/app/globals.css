@@ -80,3 +80,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.option-content:hover .close{
+    opacity: 1;
+}

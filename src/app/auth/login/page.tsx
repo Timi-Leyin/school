@@ -51,9 +51,9 @@ function Page() {
     }
   }, [query, data, error]);
   return (
-    <div className="p-12 max-w-[500px] mx-auto">
-      <img src="/next.svg" alt="Logo" className="size-[100px]" />
-      <div className="py-4">
+    <div className="p-12 shadow-md rounded-md max-w-[500px] mx-auto">
+      <img src="/logo.svg" alt="Logo" className="size-[100px]" />
+      <div className="pb-4">
         <h3 className="text-3xl py-2 font-bold">Sign in</h3>
         <p className="text-sm">
           Don't have an account?{" "}

@@ -28,7 +28,7 @@ export function NavMenu() {
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
                     href="/"
                   >
-                    <img src="/next.svg" className="w-[100px]" />
+                    <img src="/logo.svg" className="w-[100px]" />
                     <div className="mb-2 mt-4 text-lg font-medium">Voting</div>
                     <p className="text-sm leading-tight text-muted-foreground">
                       The Voting System is designed to facilitate seamless and
@@ -39,7 +39,7 @@ export function NavMenu() {
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Create a New Vote">
+              <ListItem href="/dashboard/vote/new" title="Create a New Vote">
                 Initiate a new voting process by defining the election title,
                 description, candidate names, and voting period.
               </ListItem>

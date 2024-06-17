@@ -20,16 +20,19 @@ enum Role {
 }
 
 model file {
-  uuid      String   @id @unique @default(uuid())
-  src       String
-  provider  String // self-hosted || cloudinary || s3
-  type      String // image || video // documents etc
-  size      String?
-  alt       String?
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      user[]
+  uuid          String       @id @unique @default(uuid())
+  src           String
+  provider      String // self-hosted || cloudinary || s3
+  type          String // image || video // documents etc
+  size          String?
+  alt           String?
+  isDeleted     Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  user          user[]
+  voteOptions   voteOptions? @relation(fields: [voteOptionsId], references: [uuid])
+  voteOptionsId String?
+  votes         votes[]
 }
 
 model department {
@@ -53,11 +56,64 @@ model user {
   isVerified  Boolean     @default(false)
   isSuspended Boolean     @default(false)
   isBanned    Boolean     @default(false)
-  avatar      file?       @relation(fields: [fileUuid], references: [uuid])
-  department  department? @relation(fields: [departmentUuid], references: [uuid])
+  avatar      file?       @relation(fields: [fileId], references: [uuid])
+  department  department? @relation(fields: [departmentId], references: [uuid])
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  fileUuid       String?
-  departmentUuid String?
+  fileId       String?
+  departmentId String?
+  votes        votes[]       @relation("created_by_user")
+  voteOptions  voteOptions[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model voteTextOption {
+  uuid          String       @id @unique @default(uuid())
+  text          String
+  voteOptions   voteOptions? @relation(fields: [voteOptionsId], references: [uuid])
+  voteOptionsId String?
+}
+
+model voteOptions {
+  uuid    String @id @unique @default(uuid())
+  votes   votes  @relation(fields: [votesId], references: [uuid])
+  file    file[]
+  votesId String
+
+  optionsText  voteTextOption[]
+  optionsUsers user[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Visibility {
+  public
+  private
+}
+
+enum WhoCanView {
+  everyone
+}
+
+model votes {
+  uuid        String     @id @unique @default(uuid())
+  title       String
+  description String?    @db.Text
+  visibility  Visibility @default(public)
+  whoCanView  WhoCanView @default(everyone)
+
+  thumbnail file   @relation(fields: [fileId], references: [uuid])
+  fileId    String
+
+  createdBy user   @relation("created_by_user", fields: [userId], references: [uuid])
+  userId    String
+
+  options   voteOptions[]
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

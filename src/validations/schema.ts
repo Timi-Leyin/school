@@ -12,3 +12,16 @@ export const createUserSchema = Yup.object({
   matricNo: Yup.string().trim().required(),
   role: Yup.string().trim().required(),
 });
+
+export const createVoteSchema = Yup.object({
+  title: Yup.string().trim().required(),
+  visibility: Yup.string().trim().required(),
+  options: Yup.array().of(
+    Yup.object().shape({
+      text: Yup.string().required("Option is required"),
+    })
+  ),
+  startDate: Yup.string().trim().required(),
+  endDate: Yup.string().trim().required(),
+  whoCanVote: Yup.string().trim().required(),
+});
