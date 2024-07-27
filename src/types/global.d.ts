@@ -1,14 +1,14 @@
-import { Role, user, votes } from "@prisma/client";
+import { currentVotes, Role, user, voteOptions, votes } from "@prisma/client";
 
 export type userWithoutPassword = Omit<user, "password">;
 
-type VoteOptions = {
+type $VoteOptions = {
   text: string;
 };
 
 export type newVoteType = {
   endDate: string;
-  options: VoteOptions[];
+  options: $VoteOptions[];
   startDate: string;
   title: string;
   visibility: "public" | "private";
@@ -23,4 +23,10 @@ type createdBy = {
 };
 export interface VoteData extends votes {
   createdBy: createdBy;
+  currentVotes: currentVotes[];
+  options: voteOptions[];
+  thumbnail: {
+    src: string;
+    alt: string;
+  };
 }

@@ -58,7 +58,7 @@ function Page() {
   const d = new Date();
   const tommorrow = d.setDate(d.getDate() + 1); // get todays day and add one
   const [visibility, setVisibility] = useState("public");
-  const { data, loading, fetchData: createNewVote } = useFetch(newVote);
+  const { data, loading, error, fetchData: createNewVote } = useFetch(newVote);
   const [whoCanVote, setWhoCanVote] = useState("everyone");
   const initialPreview = "/thumb.avif";
   const [previewThumbnail, setPreview] = useState(initialPreview);
@@ -89,9 +89,15 @@ function Page() {
       // fd.append("whoCanVote", values.whoCanVote);
       // fd.append("options", JSON.stringify(values.options));
       await createNewVote(fd);
-      router.push("/dashboard");
+      fd.forEach((va)=> console.log(va))
     },
   });
+  useEffect(()=>{
+    // @ts-ignore
+    if(!error && !loading && data && !data.data){
+      router.push("/dashboard");
+    }
+  },[data, loading, error,])
 
   const openDatePicker = (ref: RefObject<HTMLInputElement>) => {
     if (!ref.current) {
@@ -238,7 +244,7 @@ function Page() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="startDate"
-                  value={formik.values.endDate}
+                  // value={formik.values.endDate}
                   type="datetime-local"
                   className="opacity-0 select-none invisible absolute"
                 />

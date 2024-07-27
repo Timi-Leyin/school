@@ -21,7 +21,9 @@ export const GET = async (req: NextRequest) => {
         status: 200,
       }
     );
-  } catch (error) {}
+  } catch (error) {
+    return errorHandler(error);
+  }
 };
 
 export const POST = async (req: NextRequest) => {
@@ -30,7 +32,7 @@ export const POST = async (req: NextRequest) => {
     if (decoded.error || !decoded.decoded) {
       return NextResponse.json({ msg: decoded.error }, { status: 400 });
     }
-
+    
     const body = await req.formData();
     const allKeys = body.keys();
     const title = body.get("title") as string;
@@ -38,6 +40,7 @@ export const POST = async (req: NextRequest) => {
     const endDate = body.get("endDate") as string;
     const thumbnail = body.get("thumbnail"); // file
     const formDataEntries = Array.from(body.entries());
+    console.log(startDate, endDate, "DDD")
 
     // Regular expression to match `options[n].text`
     const optionsTextRegex = /^options\[\d+\]\.text$/;
@@ -49,12 +52,13 @@ export const POST = async (req: NextRequest) => {
     const optionsTextValues = optionsTextEntries.map(([key, value]) => {
       return { text: value as string };
     });
-
+    const d = new Date();
+    const tommorrow = d.setDate(d.getDate() + 1);
     await database.votes.create({
       data: {
         title,
         startDate: new Date(startDate || Date.now()).toISOString(),
-        endDate: new Date(endDate).toISOString(),
+        endDate: new Date(endDate||tommorrow).toISOString(),
         createdBy: {
           connect: {
             uuid: decoded.decoded.uuid,
@@ -75,6 +79,7 @@ export const POST = async (req: NextRequest) => {
       }
     );
   } catch (error) {
+    console.log(error)
     return errorHandler();
   }
 };

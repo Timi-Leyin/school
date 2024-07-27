@@ -64,8 +64,9 @@ model user {
   votes        votes[]       @relation("created_by_user")
   voteOptions  voteOptions[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  currentVotes currentVotes[]
 }
 
 model voteOptions {
@@ -78,8 +79,9 @@ model voteOptions {
   users  user?   @relation(fields: [userId], references: [uuid])
   userId String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  currentVotes currentVotes[]
 }
 
 enum Visibility {
@@ -89,6 +91,18 @@ enum Visibility {
 
 enum WhoCanView {
   everyone
+}
+
+model currentVotes {
+  uuid String @id @unique @default(uuid())
+
+  option voteOptions @relation(fields: [voteOptionsId], references: [uuid])
+
+  user          user    @relation(fields: [userId], references: [uuid])
+  votes         votes?  @relation(fields: [votesId], references: [uuid])
+  votesId       String?
+  userId        String
+  voteOptionsId String
 }
 
 model votes {
@@ -104,9 +118,10 @@ model votes {
   createdBy user   @relation("created_by_user", fields: [userId], references: [uuid])
   userId    String
 
-  options   voteOptions[]
-  startDate DateTime
-  endDate   DateTime
+  options      voteOptions[]
+  currentVotes currentVotes[]
+  startDate    DateTime
+  endDate      DateTime
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

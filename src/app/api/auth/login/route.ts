@@ -17,6 +17,7 @@ export const POST = async (req: NextRequest) => {
         { status: 400 }
       );
     }
+    
 
     const user = await getUniqueUser({
       email: body.email,

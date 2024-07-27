@@ -14,3 +14,7 @@ export interface GetUsersResponse extends ResponseT {
 export interface GetAllVotesResponse extends ResponseT {
   data: VoteData[];
 }
+
+export interface GetVotesResponse extends ResponseT {
+  data: VoteData;
+}
