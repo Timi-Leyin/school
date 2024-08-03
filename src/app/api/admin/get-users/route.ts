@@ -16,9 +16,9 @@ export const GET = async (req: NextRequest) => {
 
     const isNotStudent = user.role !== Role.student;
 
-    if (!isNotStudent) {
-      return NextResponse.json({ msg: "Access Denied" }, { status: 403 });
-    }
+    // if (!isNotStudent) {
+    //   return NextResponse.json({ msg: "Access Denied" }, { status: 403 });
+    // }
 
     const users = await prisma.user.findMany({
       where: {
