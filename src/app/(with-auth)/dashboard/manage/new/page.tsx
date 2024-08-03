@@ -15,7 +15,7 @@ import { createUserSchema } from "@/validations/schema";
 import { useFormik } from "formik";
 import React from "react";
 
-function page() {
+function Page() {
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -99,4 +99,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

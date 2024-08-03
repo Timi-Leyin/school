@@ -1,5 +1,12 @@
 import * as Yup from "yup";
 
+export const registerSchema = Yup.object({
+  email: Yup.string().trim().email().required(),
+  password: Yup.string().trim().required(),
+  firstName: Yup.string().trim().required(),
+  lastName: Yup.string().trim().required(),
+});
+
 export const loginSchema = Yup.object({
   email: Yup.string().trim().email().required(),
   password: Yup.string().trim().required(),

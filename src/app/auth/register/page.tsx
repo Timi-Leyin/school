@@ -8,41 +8,49 @@ import { loginSchema } from "@/validations/schema";
 import { API } from "@/config/api";
 import { useFetch } from "@/hooks/use-fetch";
 import { useRouter, useSearchParams } from "next/navigation";
+import { startRegistration } from "@simplewebauthn/browser";
 
 /*******
-  Login Request Body Type
+  Register Request Body Type
 *******/
-type LoginT = {
+type RegisterT = {
 	email: string;
 	password: string;
+	firstName: string;
+	lastName: string;
 };
-const login = ({ email, password }: LoginT) => {
-	return API.post("/api/auth/login", {
+type VerifyRegisterT = {
+	response: any;
+};
+const register = ({ email, password, firstName, lastName }: RegisterT) => {
+	return API.post("/api/auth/register", {
 		email,
 		password,
+		firstName,
+		lastName,
 	});
 };
 
-type VerifyLoginT = {
-	response: any;
-};
-
-const verifyLogin = ({ response }: VerifyLoginT) => {
-	return API.post("/api/auth/login/verify", { response });
+const verifyRegister = ({ response }: VerifyRegisterT) => {
+	return API.post("/api/auth/register/verify", { response });
 };
 
 /*******
-  LOGIN PAGE
+  REGISTER PAGE
 *******/
-import { startAuthentication } from "@simplewebauthn/browser";
+
 function Page() {
-	const { fetchData, loading, data, error } = useFetch<LoginT>(login);
+	const { fetchData, loading, data, error } = useFetch<RegisterT, any>(
+		register
+	);
 	const router = useRouter();
 	const query = useSearchParams();
 	const formik = useFormik({
 		initialValues: {
 			email: "",
 			password: "",
+			firstName: "",
+			lastName: "",
 		},
 		validationSchema: loginSchema,
 		async onSubmit(values) {
@@ -55,42 +63,51 @@ function Page() {
 		loading: verifing,
 		error: failed,
 		data: verifiedData,
-	} = useFetch<any, any>(verifyLogin);
+	} = useFetch<any, any>(verifyRegister);
 	const verified = useRef(false);
-
 	useEffect(() => {
 		formik.validateForm();
 
 		if (data && !error && !loading) {
-			const continueUrl = query.get("next");
-
 			const startAuth = async () => {
 				try {
-					// @ts-ignore
-					const authResp = await startAuthentication(data.options);
-					
+					const options = {
+						...data.options,
+						authenticatorAttachment: "platform",
+						userVerification: "required",
+					};
+					const authResp = await startRegistration(options);
 					verifyReg({ response: authResp });
-					router.replace(continueUrl || `/dashboard`);
 				} catch (error) {
-					console.log(error)
-					prompt("Verification Failed");
+					alert("Verification Failed");
 				}
 			};
 			startAuth();
 		}
 	}, [query, data, error]);
+
+	useEffect(() => {
+		if (verifiedData && !failed && !verifing && !verified.current) {
+			const continueUrl = query.get("next");
+			const v = (verified.current = verifiedData.data.verified);
+			console.log(v);
+			if (!v) {
+				alert("Verified Failed");
+				return;
+			}
+			// verified.current = true;
+			router.replace(continueUrl || `/dashboard`);
+		}
+	}, [verifiedData]);
 	return (
 		<div className="p-12 shadow-md rounded-md max-w-[500px] mx-auto">
 			<img src="/logo.svg" alt="Logo" className="size-[100px]" />
 			<div className="pb-4">
-				<h3 className="text-3xl py-2 font-bold">Sign in</h3>
+				<h3 className="text-3xl py-2 font-bold">Register</h3>
 				<p className="text-sm">
-					Don{"'"}t have an account?{" "}
-					{/* <a href="maillto:admin@school.com" className="font-bold">
+					Already have an account?{" "}
+					<a href="maillto:admin@school.com" className="font-bold">
 						Contact the School Officer
-					</a> */}
-					<a href="/auth/register" className="font-bold">
-						Register
 					</a>
 				</p>
 			</div>
@@ -106,6 +123,28 @@ function Page() {
 							placeholder="originalTimi"
 							className="h-[50px] text-sm"
 							type="email"
+						/>
+					</div>
+					<div className="">
+						<Input
+							value={formik.values.firstName}
+							name="firstName"
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							placeholder="originalTimi"
+							className="h-[50px] text-sm"
+							type="firstName"
+						/>
+					</div>
+					<div className="">
+						<Input
+							value={formik.values.lastName}
+							name="lastName"
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							placeholder="originalTimi"
+							className="h-[50px] text-sm"
+							type="lastName"
 						/>
 					</div>
 					<div className="">
@@ -134,7 +173,7 @@ function Page() {
 							{loading ? (
 								<FaSpinner className="animate-spin" />
 							) : (
-								<span> Login</span>
+								<span> Register </span>
 							)}
 						</Button>
 						<Button
