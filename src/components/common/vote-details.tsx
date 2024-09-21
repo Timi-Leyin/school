@@ -19,7 +19,8 @@ import { GetVotesResponse } from "@/types/response";
 import countVotes from "@/utils/count-votes";
 import { getDay, getTime } from "@/utils/date";
 import { Calendar, Copy } from "iconsax-react";
-import { LinkIcon } from "lucide-react";
+import { LinkIcon, TableIcon } from "lucide-react";
+import Link from "next/link";
 import { Fragment, useEffect } from "react";
 import { FaSpinner, FaTimes } from "react-icons/fa";
 interface VoteDetailsProps {
@@ -57,7 +58,7 @@ export const VoteContent = ({
 	const stil = started && ended;
 	const highest = countVotes(vote.currentVotes);
 
-  useEffect(()=>{}, [])
+	useEffect(() => {}, []);
 
 	return (
 		<section>
@@ -105,7 +106,15 @@ export const VoteContent = ({
 					<div>
 						{vote.options.map((voteOptions) => {
 							if (voteOptions.uuid == highest) {
-								return <Button variant={"outline"} className="my-2 font-semibold text-sm" key={voteOptions.uuid}>{voteOptions.text} has the highest vote</Button>;
+								return (
+									<Button
+										variant={"outline"}
+										className="my-2 font-semibold text-sm"
+										key={voteOptions.uuid}
+									>
+										{voteOptions.text} has the highest vote
+									</Button>
+								);
 							}
 						})}
 					</div>
@@ -192,12 +201,18 @@ export function VoteDetails({ children, vote }: VoteDetailsProps) {
 						<Button variant={"outline"} className="flex items-center gap-4">
 							<FaTimes size={12} />
 						</Button>
-						<Button
-							variant={"outline"}
-							className="flex items-center gap-4 text-xs"
+						<Link
+							href={`/dashboard/vote/options/${
+								voteDetail && voteDetail.data && voteDetail.data.uuid
+							}`}
 						>
-							<Copy size={12} /> Copy link
-						</Button>
+							<Button
+								variant={"outline"}
+								className="flex items-center gap-4 text-xs"
+							>
+								<TableIcon size={12} /> View Vote Listing
+							</Button>
+						</Link>
 					</div>
 				</SheetHeader>
 				{isLoadingDetails ? (

@@ -12,18 +12,26 @@ export const createUser = async ({
 	firstName,
 	lastName,
 	password,
+	role,
+	email,
+	matricNo,
 }: {
 	firstName: string;
 	lastName: string;
 	password: string;
+	role?: string;
+	email?: string;
+	matricNo?: string;
 }) => {
 	return await database.user.create({
 		data: {
 			firstName,
 			lastName,
-      isVerified:false,
+			isVerified: false,
+			email,
+			matricNo,
 			password: bcrypt.hashSync(password),
-			role: Role.student,
+			role: role ? (role as Role) : Role.student,
 		},
 	});
 };

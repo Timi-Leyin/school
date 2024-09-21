@@ -34,7 +34,7 @@ const verifyLogin = ({ response }: VerifyLoginT) => {
 /*******
   LOGIN PAGE
 *******/
-import { startAuthentication } from "@simplewebauthn/browser";
+// import { startAuthentication } from "@simplewebauthn/browser";
 function Page() {
 	const { fetchData, loading, data, error } = useFetch<LoginT>(login);
 	const router = useRouter();
@@ -76,7 +76,9 @@ function Page() {
 					prompt("Verification Failed");
 				}
 			};
-			startAuth();
+
+			// startAuth();
+			router.replace(continueUrl || `/dashboard`);
 		}
 	}, [query, data, error]);
 	return (

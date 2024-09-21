@@ -28,7 +28,7 @@ export function NavMenu() {
 								<NavigationMenuLink asChild>
 									<a
 										className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-										href="/"
+										href="/dashboard"
 									>
 										<img src="/logo.svg" className="w-[100px]" />
 										<div className="mb-2 mt-4 text-lg font-medium">Voting</div>
@@ -47,7 +47,7 @@ export function NavMenu() {
 									description, candidate names, and voting period.
 								</ListItem>
 							)}
-							<ListItem href="/docs/installation" title="Active Votes">
+							<ListItem href="/dashboard/vote/votes" title="All Votes">
 								View and manage ongoing voting processes. Monitor the number of
 								votes cast, current standings, and voter participation rates.
 							</ListItem>

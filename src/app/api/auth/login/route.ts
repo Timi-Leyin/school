@@ -31,6 +31,7 @@ export const POST = async (req: NextRequest) => {
 		}
 
 		const verifyPassword = await bcrypt.compare(body.password, user.password);
+	
 		if (!verifyPassword) {
 			return NextResponse.json(
 				{ msg: "Email or Password is Incorrect" },
@@ -42,29 +43,32 @@ export const POST = async (req: NextRequest) => {
 			uuid: user.uuid,
 		});
 
-		const { credential } = user?.key as any;
-		const options = await generateAuthenticationOptions({
+		// const { credential } = user?.key as any;
+		// const options = await generateAuthenticationOptions({
 			// allowCredentials: [
 			// 	{
 			// 		id: credential ? (credential.credentialID || credential) : "",
 			// 		transports: ["internal", "nfc"],
 			// 	},
 			// ],
-			userVerification: "preferred",
-			rpID:RPID,
-		});
+		// 	userVerification: "preferred",
+		// 	rpID:RPID,
+		// });
 
 		await database.user.update({
 			where: { email: body.email },
 			data: {
-				auth: options as unknown as Prisma.JsonObject,
+				// auth: options as unknown as Prisma.JsonObject,
 			},
 		});
 
 		const response = NextResponse.json(
-			{ msg: "Login Successfully", options },
+			{ msg: "Login Successfully", 
+				// options 
+			},
 			{ status: 200 }
 		);
+
 		response.cookies.set("s:id", token, {
 			httpOnly: true,
 			secure: true,
